@@ -490,6 +490,18 @@ export default function PotluckSignup() {
                       );
                     })}
                   </div>
+                  <div style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontStyle: "italic",
+                    fontSize: 13,
+                    color: inkSoft,
+                    marginTop: 12,
+                    paddingTop: 10,
+                    borderTop: `1px dotted ${rule}`,
+                    lineHeight: 1.6,
+                  }}>
+                    Plates should be paper · silverware biodegradable or wood · napkins recycled · cups paper. All quantities for 50 people.
+                  </div>
                 </div>
               );
             }
