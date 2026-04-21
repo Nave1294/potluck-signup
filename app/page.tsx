@@ -8,9 +8,12 @@ const ESSENTIALS_CHECKLIST = [
   "Paper cups",
   "Plastic wine glasses",
   "Bags of ice (6)",
-  "Large cooler (1 of 3)",
-  "Large cooler (2 of 3)",
-  "Large cooler (3 of 3)",
+];
+
+const COOLER_SLOTS = [
+  "Large cooler · 1 of 3",
+  "Large cooler · 2 of 3",
+  "Large cooler · 3 of 3",
 ];
 
 const CATEGORIES = [
@@ -453,7 +456,8 @@ export default function PotluckSignup() {
             const unit = c === 1 ? cat.unit : cat.unitPlural;
 
             if (cat.id === "essentials") {
-              const allClaimed = ESSENTIALS_CHECKLIST.every(
+              const allItems = [...ESSENTIALS_CHECKLIST, ...COOLER_SLOTS];
+              const allClaimed = allItems.every(
                 (item) => matchEssentialItem(item, essentialsEntries)
               );
               return (
@@ -461,7 +465,7 @@ export default function PotluckSignup() {
                   <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 12 }}>
                     <div style={s.categoryName}>{cat.label}</div>
                     <div style={{ ...s.categoryCount, marginBottom: 0 }}>
-                      {allClaimed ? "all covered!" : `${ESSENTIALS_CHECKLIST.filter((item) => !matchEssentialItem(item, essentialsEntries)).length} still needed`}
+                      {allClaimed ? "all covered!" : `${allItems.filter((item) => !matchEssentialItem(item, essentialsEntries)).length} still needed`}
                     </div>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "4px 24px" }}>
@@ -484,6 +488,37 @@ export default function PotluckSignup() {
                             {match ? "✓" : "○"}
                           </span>
                           <span style={{ color: match ? ink : inkSoft, textDecoration: match ? "none" : "none" }}>
+                            {item}
+                          </span>
+                          {match && (
+                            <span style={{ fontStyle: "italic", color: sage, fontSize: 13, marginLeft: 2 }}>
+                              — {match.name}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4px 12px", marginTop: 4 }}>
+                    {COOLER_SLOTS.map((item) => {
+                      const match = matchEssentialItem(item, essentialsEntries);
+                      return (
+                        <div
+                          key={item}
+                          style={{
+                            display: "flex",
+                            alignItems: "baseline",
+                            gap: 8,
+                            padding: "5px 0",
+                            borderBottom: `1px dotted ${rule}`,
+                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontSize: 15,
+                          }}
+                        >
+                          <span style={{ color: match ? sage : inkSoft, fontSize: 16, lineHeight: 1 }}>
+                            {match ? "✓" : "○"}
+                          </span>
+                          <span style={{ color: match ? ink : inkSoft }}>
                             {item}
                           </span>
                           {match && (
