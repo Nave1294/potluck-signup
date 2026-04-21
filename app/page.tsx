@@ -2,19 +2,24 @@
 import { useState, useEffect } from "react";
 
 const ESSENTIALS_CHECKLIST = [
-  "Plates",
-  "Napkins",
-  "Silverware",
-  "Cups",
+  "Paper/compostable plates",
+  "Recycled napkins",
+  "Biodegradable/wood silverware",
+  "Paper cups",
   "Plastic wine glasses",
   "Bags of ice (6)",
+  "Large cooler (1 of 3)",
+  "Large cooler (2 of 3)",
+  "Large cooler (3 of 3)",
 ];
 
 const CATEGORIES = [
   { id: "side", label: "Sides & salads", unit: "dish", unitPlural: "dishes" },
   { id: "main", label: "Mains", unit: "dish", unitPlural: "dishes" },
   { id: "dessert", label: "Desserts", unit: "dish", unitPlural: "dishes" },
-  { id: "drinks", label: "Drinks", unit: "drink", unitPlural: "drinks" },
+  { id: "nonalcoholic", label: "Non-alcoholic", unit: "drink", unitPlural: "drinks" },
+  { id: "beer", label: "Beer", unit: "contribution", unitPlural: "contributions" },
+  { id: "wine", label: "Wine", unit: "bottle", unitPlural: "bottles" },
   { id: "essentials", label: "Essentials", unit: "item", unitPlural: "items" },
 ];
 
@@ -500,7 +505,7 @@ export default function PotluckSignup() {
                     borderTop: `1px dotted ${rule}`,
                     lineHeight: 1.6,
                   }}>
-                    Plates should be paper · silverware biodegradable or wood · napkins recycled · cups paper. All quantities for 50 people.
+                    All quantities for 50 people.
                   </div>
                 </div>
               );
