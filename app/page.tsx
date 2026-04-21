@@ -565,6 +565,9 @@ export default function PotluckSignup() {
         <Ornament label="claim a dish" />
 
         <div style={s.servingNote}>
+          please add each dish or item separately, even if you&apos;re bringing more than one thing in the same category
+        </div>
+        <div style={s.servingNote}>
           please bring any serving utensils and condiments your dish requires
         </div>
 
