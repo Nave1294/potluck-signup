@@ -50,14 +50,10 @@ function matchEssentialItem(item: string, entries: Entry[]): Entry | undefined {
 
 export default function PotluckSignup() {
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [title, setTitle] = useState("Garden Party Potluck");
-  const [subtitle, setSubtitle] = useState("Sunday, the 3rd of May");
+  const title = "Garden Party Potluck";
+  const subtitle = "Sunday, the 3rd of May";
   const [loading, setLoading] = useState(true);
 
-  const [editingTitle, setEditingTitle] = useState(false);
-  const [editingSubtitle, setEditingSubtitle] = useState(false);
-  const [tempTitle, setTempTitle] = useState("");
-  const [tempSubtitle, setTempSubtitle] = useState("");
 
   const [name, setName] = useState("");
   const [dish, setDish] = useState("");
@@ -74,14 +70,8 @@ export default function PotluckSignup() {
 
   const loadData = async () => {
     try {
-      const [cfgRes, entriesRes] = await Promise.all([
-        fetch("/api/config"),
-        fetch("/api/entries"),
-      ]);
-      const cfg = await cfgRes.json();
-      if (cfg.title) setTitle(cfg.title);
-      if (cfg.subtitle) setSubtitle(cfg.subtitle);
-      const list = await entriesRes.json();
+      const res = await fetch("/api/entries");
+      const list = await res.json();
       setEntries(list);
     } catch (e) {
       console.error("Load error:", e);
@@ -95,17 +85,6 @@ export default function PotluckSignup() {
     return () => clearInterval(poll);
   }, []);
 
-  const saveConfig = async (newTitle: string, newSubtitle: string) => {
-    try {
-      await fetch("/api/config", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: newTitle, subtitle: newSubtitle }),
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const addEntry = async () => {
     if (!name.trim() || !dish.trim() || saving) return;
@@ -193,7 +172,6 @@ export default function PotluckSignup() {
       margin: "0 0 10px",
       color: ink,
       lineHeight: 1.05,
-      cursor: "text",
     },
     subtitle: {
       fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -202,19 +180,6 @@ export default function PotluckSignup() {
       textAlign: "center",
       color: inkSoft,
       marginBottom: 10,
-      cursor: "text",
-    },
-    editInput: {
-      font: "inherit",
-      fontSize: "inherit",
-      color: "inherit",
-      background: "transparent",
-      border: "none",
-      borderBottom: `1px dashed ${sage}`,
-      outline: "none",
-      textAlign: "center",
-      width: "90%",
-      maxWidth: 500,
     },
     ornament: {
       display: "flex",
@@ -423,16 +388,6 @@ export default function PotluckSignup() {
       letterSpacing: "0.03em",
       zIndex: 100,
     },
-    editHint: {
-      fontFamily: "'Cormorant Garamond', Georgia, serif",
-      fontStyle: "italic",
-      fontSize: 12,
-      color: sage,
-      textAlign: "center",
-      marginTop: 4,
-      marginBottom: 24,
-      opacity: 0.7,
-    },
   };
 
   const Sprig = () => (
@@ -482,53 +437,8 @@ export default function PotluckSignup() {
 
         <div style={s.preamble}>bring a dish to share</div>
 
-        {editingTitle ? (
-          <input
-            autoFocus
-            style={{ ...s.title, ...s.editInput }}
-            value={tempTitle}
-            onChange={(e) => setTempTitle(e.target.value)}
-            onBlur={() => {
-              if (tempTitle.trim()) {
-                setTitle(tempTitle.trim());
-                saveConfig(tempTitle.trim(), subtitle);
-              }
-              setEditingTitle(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") e.currentTarget.blur();
-              if (e.key === "Escape") setEditingTitle(false);
-            }}
-          />
-        ) : (
-          <h1 style={s.title} onClick={() => { setTempTitle(title); setEditingTitle(true); }}>
-            {title}
-          </h1>
-        )}
-
-        {editingSubtitle ? (
-          <input
-            autoFocus
-            style={{ ...s.subtitle, ...s.editInput }}
-            value={tempSubtitle}
-            onChange={(e) => setTempSubtitle(e.target.value)}
-            onBlur={() => {
-              setSubtitle(tempSubtitle.trim());
-              saveConfig(title, tempSubtitle.trim());
-              setEditingSubtitle(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") e.currentTarget.blur();
-              if (e.key === "Escape") setEditingSubtitle(false);
-            }}
-          />
-        ) : (
-          <div style={s.subtitle} onClick={() => { setTempSubtitle(subtitle); setEditingSubtitle(true); }}>
-            {subtitle}
-          </div>
-        )}
-
-        <div style={s.editHint}>(click the title or date to edit)</div>
+        <h1 style={s.title}>{title}</h1>
+        <div style={s.subtitle}>{subtitle}</div>
 
         <Ornament label="the offerings so far" />
 
