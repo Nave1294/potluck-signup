@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const ESSENTIALS_CHECKLIST = [
   "Paper/compostable plates",
@@ -59,8 +59,16 @@ function matchEssentialItem(item: string, entries: Entry[]): Entry | undefined {
 export default function PotluckSignup() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const title = "Garden Party Potluck";
-  const subtitle = "Sunday, the 3rd of May";
+  const subtitle = "Sunday, the 3rd of May · 3pm";
   const [loading, setLoading] = useState(true);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const selectCategory = (catId: string) => {
+    setCategory(catId);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
+  };
 
 
   const [name, setName] = useState("");
@@ -547,7 +555,12 @@ export default function PotluckSignup() {
             }
 
             return (
-              <div key={cat.id} style={s.categoryCard}>
+              <div
+                key={cat.id}
+                style={{ ...s.categoryCard, cursor: "pointer" }}
+                onClick={() => selectCategory(cat.id)}
+                title={`Click to add a ${cat.unit}`}
+              >
                 <div style={s.categoryName}>{cat.label}</div>
                 <div style={s.categoryCount}>
                   {c === 0 ? "nothing yet" : `${c} ${unit} so far`}
@@ -568,7 +581,7 @@ export default function PotluckSignup() {
           please bring any serving utensils and condiments your dish requires
         </div>
 
-        <div style={s.formCard}>
+        <div ref={formRef} style={s.formCard}>
           <div style={s.formRow}>
             <div>
               <label style={s.label}>Your name</label>
