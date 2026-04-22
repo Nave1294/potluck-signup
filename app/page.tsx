@@ -48,12 +48,23 @@ function normalize(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-function matchEssentialItem(item: string, entries: Entry[]): Entry | undefined {
-  const normItem = normalize(item);
-  return entries.find((e) => {
-    const normDish = normalize(e.dish);
-    return normDish.includes(normItem) || normItem.includes(normDish);
-  });
+// Matches each checklist item to at most one entry, and each entry to at most one item.
+function matchAllEssentials(items: string[], entries: Entry[]): Map<string, Entry> {
+  const result = new Map<string, Entry>();
+  const used = new Set<string>();
+  for (const item of items) {
+    const normItem = normalize(item);
+    const match = entries.find((e) => {
+      if (used.has(e.id)) return false;
+      const normDish = normalize(e.dish);
+      return normDish.includes(normItem) || normItem.includes(normDish);
+    });
+    if (match) {
+      result.set(item, match);
+      used.add(match.id);
+    }
+  }
+  return result;
 }
 
 export default function PotluckSignup() {
@@ -465,20 +476,19 @@ export default function PotluckSignup() {
 
             if (cat.id === "essentials") {
               const allItems = [...ESSENTIALS_CHECKLIST, ...COOLER_SLOTS];
-              const allClaimed = allItems.every(
-                (item) => matchEssentialItem(item, essentialsEntries)
-              );
+              const matchMap = matchAllEssentials(allItems, essentialsEntries);
+              const allClaimed = allItems.every((item) => matchMap.has(item));
               return (
                 <div key={cat.id} style={{ ...s.categoryCard, gridColumn: "1 / -1" }}>
                   <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 12 }}>
                     <div style={s.categoryName}>{cat.label}</div>
                     <div style={{ ...s.categoryCount, marginBottom: 0 }}>
-                      {allClaimed ? "all covered!" : `${allItems.filter((item) => !matchEssentialItem(item, essentialsEntries)).length} still needed`}
+                      {allClaimed ? "all covered!" : `${allItems.filter((item) => !matchMap.has(item)).length} still needed`}
                     </div>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "4px 24px" }}>
                     {ESSENTIALS_CHECKLIST.map((item) => {
-                      const match = matchEssentialItem(item, essentialsEntries);
+                      const match = matchMap.get(item);
                       return (
                         <div
                           key={item}
@@ -509,7 +519,7 @@ export default function PotluckSignup() {
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4px 12px", marginTop: 4 }}>
                     {COOLER_SLOTS.map((item) => {
-                      const match = matchEssentialItem(item, essentialsEntries);
+                      const match = matchMap.get(item);
                       return (
                         <div
                           key={item}
