@@ -29,11 +29,11 @@ const CATEGORIES = [
 // Palette
 const cream = "#f6efe2";
 const paper = "#fbf6ea";
-const ink = "#1f3329";
-const inkSoft = "#4a5a50";
-const sage = "#6b8461";
-const terracotta = "#b86841";
-const rule = "rgba(31, 51, 41, 0.18)";
+const ink = "#1a2d22";
+const inkSoft = "#3a4d42";
+const sage = "#4e6645";
+const terracotta = "#a85e38";
+const rule = "rgba(31, 51, 41, 0.26)";
 
 type Entry = {
   id: string;
